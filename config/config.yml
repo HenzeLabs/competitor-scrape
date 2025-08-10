@@ -1,0 +1,126 @@
+respect_robots: true
+catalog_csv: catalog/catalog.csv
+google_doc_id: YOUR_GOOGLE_DOC_ID
+user_agent:
+  - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36"
+
+sites:
+  - name: labessentials.com
+    use_playwright: false
+    start_urls:
+      - "https://labessentials.com"
+    selectors:
+      product_link: "a"
+      title: "h1"
+      price: ""
+      sku: ""
+      images: "img"
+      in_stock: ""
+      stock_text_contains: ""
+      categories: ""
+      rating: ""
+      reviews_count: ""
+    concurrency: 1
+    delay_s: { min: 1.0, max: 2.0 }
+    max_pages: 5
+    max_urls: 50
+
+  - name: amscope.com
+    use_playwright: false
+    start_urls:
+      - "https://amscope.com"
+    selectors:
+      product_link: "a"
+      title: "h1"
+      price: ""
+      sku: ""
+      images: "img"
+      in_stock: ""
+      stock_text_contains: ""
+      categories: ""
+      rating: ""
+      reviews_count: ""
+    concurrency: 1
+    delay_s: { min: 1.0, max: 2.0 }
+    max_pages: 5
+    max_urls: 50
+
+  - name: druckerdiagnostics.com
+    use_playwright: false
+    start_urls:
+      - "https://druckerdiagnostics.com"
+    selectors:
+      product_link: "a"
+      title: "h1"
+      price: ""
+      sku: ""
+      images: "img"
+      in_stock: ""
+      stock_text_contains: ""
+      categories: ""
+      rating: ""
+      reviews_count: ""
+    concurrency: 1
+    delay_s: { min: 1.0, max: 2.0 }
+    max_pages: 5
+    max_urls: 50
+
+  - name: thermofisher.com
+    use_playwright: false
+    start_urls:
+      - "https://www.thermofisher.com/us/en/home.html"
+    selectors:
+      product_link: "a"
+      title: "h1"
+      price: ""
+      sku: ""
+      images: "img"
+      in_stock: ""
+      stock_text_contains: ""
+      categories: ""
+      rating: ""
+      reviews_count: ""
+    concurrency: 1
+    delay_s: { min: 1.0, max: 2.0 }
+    max_pages: 5
+    max_urls: 50
+
+  - name: unicosci.com
+    use_playwright: false
+    start_urls:
+      - "https://unicosci.com"
+    selectors:
+      product_link: "a"
+      title: "h1"
+      price: ""
+      sku: ""
+      images: "img"
+      in_stock: ""
+      stock_text_contains: ""
+      categories: ""
+      rating: ""
+      reviews_count: ""
+    concurrency: 1
+    delay_s: { min: 1.0, max: 2.0 }
+    max_pages: 5
+    max_urls: 50
+
+  - name: lwscientific.com
+    use_playwright: false
+    start_urls:
+      - "https://www.lwscientific.com"
+    selectors:
+      product_link: "a"
+      title: "h1"
+      price: ""
+      sku: ""
+      images: "img"
+      in_stock: ""
+      stock_text_contains: ""
+      categories: ""
+      rating: ""
+      reviews_count: ""
+    concurrency: 1
+    delay_s: { min: 1.0, max: 2.0 }
+    max_pages: 5
+    max_urls: 50
