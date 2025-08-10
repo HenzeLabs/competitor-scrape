@@ -37,7 +37,13 @@ def tag_post(post: Dict[str, Any]) -> List[str]:
         tags.append("question")
     return list(set(tags))
 
-def detect_trending(posts: List[Dict[str, Any]], window_days: int = 30) -> List[Dict[str, Any]]:
+def detect_trending(
+    posts: List[Dict[str, Any]],
+    window_days: int = 30,
+    multiplier: float = 1.5,
+    recent_hours: int = 48,
+    top_percentile: int = 95
+) -> List[Dict[str, Any]]:
     import numpy as np
     from datetime import datetime, timezone, timedelta
 
@@ -51,18 +57,18 @@ def detect_trending(posts: List[Dict[str, Any]], window_days: int = 30) -> List[
     window_rates = [p["engagement_rate"] for p in posts if p["created_utc"] >= window_start]
     baseline = float(np.median(window_rates)) if window_rates else 0.1
 
-    # Trending: ≥2x baseline or top 10% in last 48h
-    last_48h = now.timestamp() - 2 * 86400
-    recent_posts = [p for p in posts if p["created_utc"] >= last_48h]
+    # Trending: ≥multiplier*baseline or top X% in recent_hours
+    last_recent = now.timestamp() - recent_hours * 3600
+    recent_posts = [p for p in posts if p["created_utc"] >= last_recent]
     if recent_posts:
-        top_10pct = np.percentile([p["engagement_rate"] for p in recent_posts], 90)
+        top_pct = np.percentile([p["engagement_rate"] for p in recent_posts], top_percentile)
     else:
-        top_10pct = 0
+        top_pct = 0
 
     for post in posts:
         is_trending = (
-            post["engagement_rate"] >= 2 * baseline or
-            (post["created_utc"] >= last_48h and post["engagement_rate"] >= top_10pct)
+            post["engagement_rate"] >= multiplier * baseline or
+            (post["created_utc"] >= last_recent and post["engagement_rate"] >= top_pct)
         )
         post["is_trending"] = bool(is_trending)
     return posts
@@ -76,15 +82,44 @@ def deduplicate(posts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             deduped.append(p)
             seen.add(key)
     return deduped
+def process_posts(
+    posts: List[Dict[str, Any]],
+    keywords: List[str],
+    trending_only: bool = False,
+    trending_params: dict = None,
+    thresholds: dict = None
+) -> List[Dict[str, Any]]:
+    trending_params = trending_params or {}
+    thresholds = thresholds or {}
 
-def process_posts(posts: List[Dict[str, Any]], keywords: List[str], trending_only: bool = False) -> List[Dict[str, Any]]:
     for post in posts:
         post["title"] = clean_text(post.get("title", ""))
         post["selftext"] = clean_text(post.get("selftext", ""))
         post["score_value"] = score_post(post, keywords)
         post["tags"] = tag_post(post)
+
     posts = deduplicate(posts)
-    posts = detect_trending(posts)
+
+    posts = detect_trending(
+        posts,
+        window_days=trending_params.get("window_days", 30),
+        multiplier=trending_params.get("multiplier", 1.5),
+        recent_hours=trending_params.get("recent_hours", 48),
+        top_percentile=trending_params.get("top_percentile", 95),
+    )
+
+    # Fallback thresholds (accept non-trending if they clear simple bars)
+    min_score = thresholds.get("min_score", 0)
+    min_comments = thresholds.get("min_comments", 0)
+
+    filtered = []
+    for p in posts:
+        if p.get("is_trending"):
+            filtered.append(p)
+        elif (p.get("score", 0) >= min_score) or (p.get("num_comments", 0) >= min_comments):
+            filtered.append(p)
+
     if trending_only:
-        posts = [p for p in posts if p.get("is_trending")]
-    return posts
+        filtered = [p for p in filtered if p.get("is_trending")]
+
+    return filtered
