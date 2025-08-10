@@ -13,4 +13,4 @@ keywords:
   - onboarding
   - churn
 limit: 500
-trending_window_days: 30 # window for trending baseline (days)
+trending_window_days: 30
