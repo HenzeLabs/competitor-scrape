@@ -1,3 +1,11 @@
+from pathlib import Path
+from dotenv import load_dotenv
+def load_env():
+    # Auto-load .env if present
+    env_path = Path(__file__).parent.parent / ".env"
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path, override=False)
+
 #!/usr/bin/env python3
 import os, base64, json
 from pathlib import Path
@@ -104,4 +112,9 @@ def main():
     print("Summary appended to Google Doc.")
 
 if __name__ == "__main__":
+    try:
+        from dotenv import load_dotenv
+        load_env()
+    except ImportError:
+        pass
     main()
