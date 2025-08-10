@@ -1,0 +1,16 @@
+subs:
+  - r/Entrepreneur
+  - r/marketing
+  - r/SaaS
+  - r/startups
+days: 60
+sort: top
+comments: 5
+keywords:
+  - feature request
+  - pain
+  - pricing
+  - onboarding
+  - churn
+limit: 500
+trending_window_days: 30 # window for trending baseline (days)
