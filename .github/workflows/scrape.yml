@@ -2,7 +2,7 @@ name: Weekly Scrape
 
 on:
   schedule:
-    - cron: '0 9 * * 1'   # Mondays 09:00 UTC
+    - cron: "0 9 * * 1" # Mondays 09:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Cache pip
         uses: actions/cache@v4

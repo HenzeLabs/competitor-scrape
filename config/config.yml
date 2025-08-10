@@ -124,3 +124,7 @@ sites:
     delay_s: { min: 1.0, max: 2.0 }
     max_pages: 5
     max_urls: 50
+
+secrets:
+  - name: GH_TOKEN
+    value: ${{ secrets.GH_TOKEN }}
