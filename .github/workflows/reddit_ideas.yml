@@ -1,10 +1,9 @@
-# Reddit Ideas (Daily) workflow
 name: Reddit Ideas (Daily)
 
 on:
   schedule:
     - cron: "20 8 * * *" # runs daily at 08:20 UTC
-  workflow_dispatch:
+  workflow_dispatch: # allow manual runs
 
 jobs:
   lab-essentials:
