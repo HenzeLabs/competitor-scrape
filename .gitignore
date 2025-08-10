@@ -1,0 +1,5 @@
+
+.env
+reddit_ideas/config.yaml
+configs/**/*.yaml
+data/**
