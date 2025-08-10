@@ -7,12 +7,21 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 def load_service_account():
+    # Prefer base64 (CI), fall back to local file path
     b64 = os.getenv("GCP_CREDENTIALS_JSON", "").strip()
-    if not b64:
-        raise RuntimeError("GCP_CREDENTIALS_JSON not set (base64 of service account JSON).")
-    info = json.loads(base64.b64decode(b64).decode("utf-8"))
     scopes = ["https://www.googleapis.com/auth/documents"]
-    return service_account.Credentials.from_service_account_info(info, scopes=scopes)
+
+    if b64:
+        info = json.loads(base64.b64decode(b64).decode("utf-8"))
+        return service_account.Credentials.from_service_account_info(info, scopes=scopes)
+
+    path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "").strip()
+    if path and os.path.exists(path):
+        return service_account.Credentials.from_service_account_file(path, scopes=scopes)
+
+    raise RuntimeError(
+        "Missing credentials. Set GCP_CREDENTIALS_JSON (base64) or GOOGLE_APPLICATION_CREDENTIALS (file path)."
+    )
 
 def read_jsonl(p: Path):
     rows = []
